@@ -1,0 +1,8 @@
+unpack into root of website
+modify template.tpl however you like, point settings.ini at it
+page contents data goes in "pages" in files named whatever you want
+in pages/data goes files with the names you want the pages to have
+  (these will also be the linked names - without the .dat extension and capitalization is unimportant)
+  (page_file should be the name of the file in the "pages" folder that you put the page data in - 
+   header_file should be the name (if any - it isn't required) of the file any extra stuff for the header section of the page is in (in the "pages/otherdata" folder))
+change the name of "htaccess-rules" to ".htaccess" (or copy the contents into your existing .htaccess file)

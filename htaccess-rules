@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+  RewriteCond %{REQUEST_URI} !^.*/images/
+  RewriteCond %{REQUEST_URI} !^.*/downloads/
+  RewriteCond %{REQUEST_URI} !^.*/js/
+  RewriteCond %{REQUEST_URI} !^index.php
+  RewriteCond %{REQUEST_URI} !^.*/.*.css
+  RewriteCond %{REQUEST_URI} !^.*/.*.js
+  RewriteRule ^(.+)$ index.php?page=$1 [L,QSA]
+</IfModule>
