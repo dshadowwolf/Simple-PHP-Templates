@@ -18,59 +18,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-class PageDetails {
-  private $__has_header = false;
-  private $__has_vars = false;
-  private $__vars = array();
-  private $__body = "";
-  private $__header = "";
-
-  public function __construct($page_name) {
-    global $settings;
-    $page_file = $settings['site']['page_data_dir'] . '/' . $page_name . ".dat";
-    $temp = file( $page_file );
-    foreach( $temp as $line ) {
-      if( preg_match( '/^([\w\-\.\[\]]+) = (.+)$/', $line, $m ) ) {
-	if( preg_match( '/^(.*)$/', $m[1], $n ) ) {
-	  switch( strtolower( trim( $m[1] ) ) ) {
-	  case 'page_file':
-	    $tfn = $settings['site']['page_base_dir'] . '/' . trim($m[2]);
-	    $this->__body = file( $tfn );
-	    break;
-	  case 'header_file':
-	    $tfnn = $settings['site']['page_otherdata'] . '/' . trim($m[2]);
-	    $this->__header = file( $tfnn );
-	    $this->__has_header = true;
-	    break;
-	  default:
-	    $this->__has_vars = true;
-	    $this->__vars[trim($n[1])] = trim($m[2]);
-	  }
-	}
-      }
-    }
-  }
-
-  public function has_vars() {
-    return $this->__has_vars;
-  }
-
-  public function has_header() {
-    return $this->__has_header;
-  }
-
-  public function ext_vars() {
-    return $this->__vars;
-  }
-
-  public function page_body() {
-    return $this->__body;
-  }
-
-  public function page_header() {
-    return $this->__header;
-  }
-  };
+include_once("database.php");
 
 class Template {
   private $__vars = array();
