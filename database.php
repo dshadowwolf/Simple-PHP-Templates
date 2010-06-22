@@ -18,6 +18,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
+/* This is not a complete work - in fact it is far from being production ready. It is brand new code. */
+
 class PageDetails {
   private $__has_header = false;
   private $__has_vars = false;
