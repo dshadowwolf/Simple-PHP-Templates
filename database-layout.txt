@@ -1,0 +1,49 @@
+Thoughts Guiding the Design:
+
+So that people can have data-templates that exist but are not
+accessible there needs to be a table of page-names so that any given
+page can have references to multiple different chunks of data.
+
+To keep the data separate from the actual page-names, there needs to
+be a separate table. This also allows for the aformentioned "hidden
+pages". These "hidden pages" can actually be chunks of headers for
+specific pages.
+
+For handling page-specific variables there should be a separate table
+containing these.
+
+To tie the various bits of data together there are going to need to be
+tables to cross-reference the tables.
+
+Since not everyone will have access to create and/or modify pages and
+their variables, there needs to be a table of users.
+
+
+
+Design:
+
+page-data table:
+  id     (integer, auto-increment, primary key, unique)
+  data   (text object ?)
+  
+page-name table:
+  id     (integer, auto-increment, primary key, unique)
+  page-data (integer, foreign-key, ref: page-data.id)
+  
+page-variables:
+  id     (integer, auto-increment, primary key, unique)
+  name   (varchar 255)
+  value  (text object ?)
+  
+name-variable-interp:
+  id     (integer, auto-increment, primary key, unique)
+  page-name (integer, foreign-key, ref: page-name.id)
+  variable (integer, foreign-key, ref: page-variables.id)
+  
+users:
+  id     (integer, auto-increment, primary key, unique)
+  username (varchar 255, unique, key)
+  password (text object/varchar 512 -- encrypted (SHA512?))
+  contact (varchar 255 -- email address)
+  flags  (varchar 255 -- various access flags in a text format)
+  
