@@ -28,6 +28,7 @@ page-data table:
   
 page-name table:
   id     (integer, auto-increment, primary key, unique)
+  page-name (varchar 255, unique, key)
   page-data (integer, foreign-key, ref: page-data.id)
   
 page-variables:
