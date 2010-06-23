@@ -21,78 +21,49 @@
 require_once("page-data.php");
 
 class Template {
-  private $__vars = array();
-  private $__template = array();
+  private $__template = "";
   private $__page_data = "";
-  
+  private $__repl = array();
+  private $__patt = array();
+    
   public function __construct($primary_template) {
-    $this->__template = file($primary_template);
+    $this->__template = file_get_contents($primary_template);
   }
 
   public function add_variable($name,$value) {
-    $this->__vars[$name] = $value;
+    array_push($this->__repl, $value);
+    array_push($this->__patt, "/@@@".$name."@@@/imU");
   }
 
   public function load_page($page_name) {
     $page_details = new PageData($page_name);
-
+    
     if( $page_details->has_vars() ) {
       foreach( $page_details->ext_vars() as $name => $value ) {
-	$this->__vars[$name] = $value;
+	array_push($this->__patt, "/@@@".$key."@@@/imU");
+	array_push($this->__repl, $val );
       }
     }
-    $this->__vars["contents"] = $page_details->page_body();
+    array_push($this->__repl, $page_details->page_body());
+    array_push($this->__patt, "/@@@CONTENTS@@@/imU");
     if( $page_details->has_header() ) {
-      $this->__vars["headerbits"] = $page_details->page_header();
-    }
+      array_push($this->__repl, $page_details->page_header());
+      array_push($this->__patt, "/@@@HEADERBITS@@@/imU");
+    } else {
+      array_push($this->__repl, "");
+      array_push($this->__patt, "/@@@HEADERBITS@@@/imU");
   }
 
   private function interpolate_values() {
-    $temp = array();
-    $t2  = array();
-    $t3 = array();
     $vars = $this->__vars;
+    $lc = 0;
 
-    foreach( $this->__template as $line ) {
-      if( preg_match( "/(.*)@@@(.*)@@@(.*)/", $line, $matches ) ) {
-	$v = strtolower( $matches[2] );
-	foreach( $this->__vars[$v] as $vline ) {
-	  array_push( $temp, $vline );
-	}
-      } else {
-	array_push( $temp, preg_replace( '/(.*)@@@(.*)@@@(.*)/e', '\\1 $this->__vars[strtolower("\\2")] \\3', $line ) );
-      }
-    }
-
-    // we now do it a second time to get all the variables :)
-    foreach( $temp as $line ) {
-      if( preg_match( "/(.*)@@@(.*)@@@(.*)/", $line, $matches ) ) {
-	$v = strtolower( $matches[2] );
-	$val = $this->__vars[$v];
-	if( $val != "\"\"" || strlen($val) > 0 ) {
-	  $fline = $matches[1] . $val . $matches[3] . "\n";
-	} else {
-	  $fline = $matches[1] . $matches[3] . "\n";
-	}
-	array_push( $t2, $fline );
-      } else {
-	array_push( $t2, $line );
-      }
-    }
-
-    // we now do it a second time to get all the variables :)
-    foreach( $t2 as $line ) {
-      if( preg_match( "/(.*)@@@(.*)@@@(.*)/", $line, $matches ) ) {
-	$v = strtolower( $matches[2] );
-	$val = $this->__vars[$v];
-	if( $val != "\"\"" || strlen($val) > 0 ) {
-	  $fline = $matches[1] . $val . $matches[3] . "\n";
-	} else {
-	  $fline = $matches[1] . $matches[3] . "\n";
-	}
-	array_push( $t3, $fline );
-      } else {
-	array_push( $t3, $line );
+    $this->__page_data = $this->__template;
+    while( preg_match( "/@@@.*@@@/Um", $this->__page_data ) ) {
+      $this->__page_data = preg_replace( $this->__patt, $this->__repl, $this->__page_data );
+      $lc += 1;
+      if( $lc > 5 ) {
+	die( "<pre>Stuck in loop during variable interpolation, have had five loops and more variables still need to be replaced. Dumping page as-is, look for variables that were used but never defined in the system.</pre><br/><p>".$this->__page_data."</p></br>" );
       }
     }
     // manage conditionals here
@@ -103,7 +74,6 @@ class Template {
     // [@ foreach <loop name> ( <name> ) @] <data> [@ end @]
     // do this when needed - will take too much time to implement
     // right now
-    $this->__page_data = implode("",$t2);
   }
 
   public function display() {
