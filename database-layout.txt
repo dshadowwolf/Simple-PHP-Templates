@@ -25,11 +25,12 @@ Design:
 page-data table:
   id     (integer, auto-increment, primary key, unique)
   data   (text object ?)
-  
+   
 page-name table:
   id     (integer, auto-increment, primary key, unique)
   page-name (varchar 255, unique, key)
   page-data (integer, foreign-key, ref: page-data.id)
+  page-headers (integer, foreign-key, ref: page-data.id)
   
 page-variables:
   id     (integer, auto-increment, primary key, unique)
