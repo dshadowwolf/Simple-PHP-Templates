@@ -18,7 +18,7 @@ create table page-name (
 create table page-variables (
   id INT UNIQUE AUTO INCREMENT,
   name VARCHAR(255),
-  value MEDIUMTEX,
+  value MEDIUMTEXT,
   PRIMARY KEY(id)
 ) engine=InnoDB;
 
