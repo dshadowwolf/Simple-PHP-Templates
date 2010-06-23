@@ -18,6 +18,8 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 $settings = parse_ini_file('settings.ini',true);
+require_once("database.php");
+$dbc = new Database();
 require_once('template_handler.php');
 $no_output = false;
 

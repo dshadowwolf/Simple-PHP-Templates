@@ -18,7 +18,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-include_once("database.php");
+require_once("page-data.php");
 
 class Template {
   private $__vars = array();
@@ -34,7 +34,7 @@ class Template {
   }
 
   public function load_page($page_name) {
-    $page_details = new PageDetails($page_name);
+    $page_details = new PageData($page_name);
 
     if( $page_details->has_vars() ) {
       foreach( $page_details->ext_vars() as $name => $value ) {
