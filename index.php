@@ -37,4 +37,3 @@ $template->load_page($title);
 if(!$no_output) {
   echo $template->display();
 } 
-?>

@@ -84,4 +84,3 @@ class PageDetails {
     return $this->__header;
   }
   };
-?>

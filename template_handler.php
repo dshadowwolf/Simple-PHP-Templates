@@ -116,4 +116,3 @@ class Template {
     return $this->display();
   }
 }
-?>
