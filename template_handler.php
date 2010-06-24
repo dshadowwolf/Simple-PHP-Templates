@@ -25,7 +25,8 @@ class Template {
   private $__page_data = "";
   private $__repl = array();
   private $__patt = array();
-    
+  private $__vars = array();
+
   public function __construct($primary_template) {
     $this->__template = file_get_contents($primary_template);
   }
@@ -33,6 +34,7 @@ class Template {
   public function add_variable($name,$value) {
     array_push($this->__repl, $value);
     array_push($this->__patt, "/@@@".$name."@@@/imU");
+    array_push($this->__vars, strtolower($name) );
   }
 
   public function load_page($page_name) {
@@ -40,12 +42,15 @@ class Template {
     
     if( $page_details->has_vars() ) {
       foreach( $page_details->ext_vars() as $name => $value ) {
-	array_push($this->__patt, "/@@@".$key."@@@/imU");
-	array_push($this->__repl, $val );
+        array_push($this->__patt, "/@@@".$key."@@@/imU");
+        array_push($this->__repl, $val );
+        array_push($this->__vars, strtolower($val));
       }
     }
     array_push($this->__repl, $page_details->page_body());
     array_push($this->__patt, "/@@@CONTENTS@@@/imU");
+    array_push($this->__vars, "contents");
+    array_push($this->__vars, "headerbits");
     if( $page_details->has_header() ) {
       array_push($this->__repl, $page_details->page_header());
       array_push($this->__patt, "/@@@HEADERBITS@@@/imU");
@@ -55,15 +60,22 @@ class Template {
   }
 
   private function interpolate_values() {
-    $vars = $this->__vars;
     $lc = 0;
 
     $this->__page_data = $this->__template;
     while( preg_match( "/@@@.*@@@/Um", $this->__page_data ) ) {
       $this->__page_data = preg_replace( $this->__patt, $this->__repl, $this->__page_data );
+      preg_match_all( "/@@@(.*)@@@/imU", $this->__page_data, $matches );
+      foreach( $matches[1] as $var ) {
+        if( !in_array( strtolower($var) ) ) {
+          array_push( $this->__repl, "" );
+          array_push( $this->__patt, "/@@@".$var."@@@/" );
+          array_push( $this->__vars, strtolower($var) );
+        }
+      }
       $lc += 1;
       if( $lc > 5 ) {
-	die( "<pre>Stuck in loop during variable interpolation, have had five loops and more variables still need to be replaced. Dumping page as-is, look for variables that were used but never defined in the system.</pre><br/><p>".$this->__page_data."</p></br>" );
+        die( "<pre>Stuck in loop during variable interpolation, have had five loops and more variables still need to be replaced. Dumping page as-is, look for variables that were used but never defined in the system.</pre><br/><p>".$this->__page_data."</p></br>" );
       }
     }
     // manage conditionals here
