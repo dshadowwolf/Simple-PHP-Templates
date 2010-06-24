@@ -25,12 +25,12 @@ class Database {
     private $__connection = "";
     
     public function __construct() {
-	global $settings;
-	$this->__connection = new PDO( $settings['database']['type'] . ":host=" . $settings['database']['host'] . ";dbname=" . $settings['database']['dbname'], $settings['database']['user'], $settings['database']['pass'] );
+      global $settings;
+      $this->__connection = new PDO( $settings['database']['type'] . ":host=" . $settings['database']['host'] . ";dbname=" . $settings['database']['dbname'], $settings['database']['user'], $settings['database']['pass'] );
     }
     
     public function prepare($stmnt) {
-	return $this->__connection->prepare($stmnt);
+      return $this->__connection->prepare($stmnt);
     }
 };
 

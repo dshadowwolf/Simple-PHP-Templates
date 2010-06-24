@@ -32,11 +32,17 @@ class PageData {
       global $settings;
       global $dbc;
       $var_query = "SELECT page-variables.name, page-variables.value
-		    FROM (page-name JOIN name-variable-interp ON page-name.id=name-variable-interpt.page-name)
-		      JOIN page-variables ON page-variables.id=name-variable-iterp.variable
-		    WHERE page-name.id=:page-id;";
-      $data_query = "SELECT page-name.id as id, page-data.data as data FROM page-name JOIN page-data ON page-name.data = page-data.id WHERE page-name.name = :page-name;";
-      $headers_query = "SELECT page-data.data as data FROM page-data JOIN page-name ON page-name.headers = page-data.id WHERE page-name.name = :page-name;";
+		                  FROM (page-name JOIN name-variable-interp ON page-name.id=name-variable-interpt.page-name)
+		                    JOIN page-variables ON page-variables.id=name-variable-iterp.variable
+		                  WHERE page-name.id=:page-id;";
+      $data_query = "SELECT page-name.id as id, page-data.data as data 
+                       FROM page-name 
+                           JOIN page-data ON page-name.data = page-data.id 
+                       WHERE page-name.name = :page-name;";
+      $headers_query = "SELECT page-data.data as data 
+                          FROM page-data 
+                            JOIN page-name ON page-name.headers = page-data.id 
+                          WHERE page-name.name = :page-name;";
       
       $vq = $dbc->prepare($var_query);
       $dq = $dbc->prepare($data_query);
@@ -51,16 +57,16 @@ class PageData {
       $hq->bindParam(':page-name', $page_name, PDO::PARAM_STR);
       $hq->execute();
       if( $hq->rowCount() > 0 ) {
-	  $this->__has_header = true;
-	  foreach( $hq->fetchAll(PDO::FETCH_ASSOC) as $item ) {
-	      $this->__header .= $item['data'];
-	  }
+        $this->__has_header = true;
+        foreach( $hq->fetchAll(PDO::FETCH_ASSOC) as $item ) {
+          $this->__header .= $item['data'];
+        }
       }
       if( $vq->rowCount() > 0 ) {
-	  $this->__has_vars = true;
-	  foreach( $vq->fetchAll(PDO::FETCH_ASSOC) as $item ) {
-	      $this->__vars[strtolower($item['name'])] = $item['value'];
-	  }
+        $this->__has_vars = true;
+        foreach( $vq->fetchAll(PDO::FETCH_ASSOC) as $item ) {
+          $this->__vars[strtolower($item['name'])] = $item['value'];
+        }
       }
   }
     
