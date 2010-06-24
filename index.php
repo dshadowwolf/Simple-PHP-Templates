@@ -29,10 +29,6 @@ if( isset($_GET['page']) ) {
     $title = 'main';
 }
 
-if( $title == "index.php" ) {
-  $title = "main";
-}
-
 $template = new Template($settings['site']['primary_template']);
 $template->load_page($title);
 
