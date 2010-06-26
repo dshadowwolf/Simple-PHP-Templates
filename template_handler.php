@@ -1,21 +1,21 @@
 <?php
 /*
-    Simple PHP Templates v. 0.0.1
-    Copyright (C) 2010  Daniel Hazelton
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License along
-    with this program; if not, write to the Free Software Foundation, Inc.,
-    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  Simple PHP Templates v. 0.0.1
+  Copyright (C) 2010  Daniel Hazelton
+  
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
 require_once("page-data.php");
@@ -26,17 +26,17 @@ class Template {
   private $__repl = array();
   private $__patt = array();
   private $__vars = array();
-
+  
   public function __construct($primary_template) {
     $this->__template = file_get_contents($primary_template);
   }
-
+  
   public function add_variable($name,$value) {
     array_push($this->__repl, $value);
     array_push($this->__patt, "/@@@".$name."@@@/imU");
     array_push($this->__vars, strtolower($name) );
   }
-
+  
   public function load_page($page_name) {
     $page_details = new PageData($page_name);
     
@@ -57,11 +57,12 @@ class Template {
     } else {
       array_push($this->__repl, "");
       array_push($this->__patt, "/@@@HEADERBITS@@@/imU");
+    }
   }
 
   private function interpolate_values() {
     $lc = 0;
-
+    
     $this->__page_data = $this->__template;
     while( preg_match( "/@@@.*@@@/Um", $this->__page_data ) ) {
       $this->__page_data = preg_replace( $this->__patt, $this->__repl, $this->__page_data );
@@ -87,7 +88,7 @@ class Template {
     // do this when needed - will take too much time to implement
     // right now
   }
-
+  
   public function display() {
     $this->interpolate_values();
     return $this->__page_data;
@@ -97,4 +98,4 @@ class Template {
     $this->load_page( $page );
     return $this->display();
   }
-}
+};
