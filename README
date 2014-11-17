@@ -1,3 +1,15 @@
+This code is currently in a non-usable state, but can easily be
+reverted to usability by replacing the database interactions. When I
+halted work on this code because of other things consuming my time
+there were plans to move this from a mass of files in directories to
+a database.
+
+Note: There is an XSS bug in the handling of error pages - nominally
+the HTTP 404 error - where input is taken directly from the URL and
+inserted into a page without any escaping or validation. The
+correction of this is left, currently, as an exercize for the end-user
+as I still do not have time to work solely on this code.
+
 See file "INSTRUCTIONS" for instructions on how to implement this template 
 system in its base form. As work progresses on retargeting this system it 
 will change.
